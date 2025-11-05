@@ -18,4 +18,28 @@ export default function Board() {
     const [filters, setFilters] = useState({ status: 'All', priority: 'All', search: '' });
     const [search, setSearch] = useState('');
     const [queue, setQueue] = useState({});
-    
+
+
+// Fetch tickets on component mount
+    useEffect(() => {
+        let cancelled = false;
+        setLoading(true);
+        fetch('/api/tickets')
+            .then(r) => {
+                if (!r.ok) throw new Error('Failed to fetch tickets');
+                return r.json();
+            })
+            .then((data) => {
+                if (!cancelled) {
+                    setTickets(data);
+                    setError('');
+                }
+            })
+            .catch(() => !cancelled && setError('Error loading tickets'))
+            .finally(() => !cancelled && setLoading(false));
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    // Simulate live updates every 8 seconds
