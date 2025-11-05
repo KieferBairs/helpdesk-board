@@ -81,3 +81,62 @@ export default function Board() {
         return () => clearInterval(id);
     }, [tickets.length]);
 
+// Derived visible tickets
+    const visibleTickets = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        return tickets.filter (t => {
+            const statusOk = filters.status === 'All' || t.status === filters.status;
+            const priorityOk = filters.priority === 'All' || t.priority === filters.priority;
+            const textOk = !q || t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q);
+            return statusOk && priorityOk && textOk;
+        });
+    }, [tickets, filters, search]);
+
+    // Queue summary
+    const addToQueue = useCallback((id) => {
+        setQueue(q => (q[id] ? q : { ...q, [id]: true }));
+    }, []);
+    
+    const removeFromQueue = useCallback((id) => {
+        setQueue(q => {
+            const copy = { ...q };
+            delete copy[id];
+            return copy;
+        });
+    }, []);
+    const clearQueue = useCallback(() => setQueue({}), []);
+
+    return (
+        <section className="space-y-4">
+            <div className="flex flex-wrap gap-2 items-center">
+                <StatusFilter
+                    values={filters.status}
+                    onChange={(v) => setFilters(f => ({ ...f, status: v }))}
+                    options={STATUS_VALUES}
+                />
+                <PriorityFilter
+                    values={filters.priority}
+                    onChange={(v) => setFilters(f => ({ ...f, priority: v }))}
+                    options={PRIORITY_VALUES}
+                />
+                <SearchBox
+                    value={search}
+                    onChange={(v) => setSearch(v)}/>
+            </div>
+            <StatusMessage loading={loading} error={error} isEmpty={!loading && !error && visibleTickets.length === 0} />
+            {!loading && !error && visibleTickets.length > 0 && (
+                <TicketList
+                    tickets={visibleTickets}
+                    onAddToQueue={addToQueue}
+                    queuedMap={queue}
+                    />
+            )}
+            <MyQueueSummary
+                queuedMap={queue}
+                tickets={tickets}
+                onRemove={removeFromQueue}
+                onClear={clearQueue}
+            />
+        </section>
+    );
+}
