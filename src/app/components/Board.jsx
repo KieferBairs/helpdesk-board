@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, use } from 'react';
 import StatusFilter from './StatusFilter';
 import PriorityFilter from './PriorityFilter';
 import SearchBox from './SearchBox';
@@ -43,3 +43,41 @@ export default function Board() {
     }, []);
 
     // Simulate live updates every 8 seconds
+    useEffect(() => {
+        if (!tickets.length) return;
+        const id = setInterval(() => {
+            setTickets(prev) => {
+                if (!prev.length) return prev;
+                const idx = Math.floor(Math.random() * prev.length);
+                const t = prev[idx];
+
+                // decide to change status or priority
+                const changeStatus = Math.random() < 0.5;
+
+                const nextStatus = (cur) => {
+                    if (cur === 'Open') return 'In Progress';
+                    if (cur === 'In Progress') return 'On Hold';
+                    if (cur === 'On Hold') return 'Resolved';
+                    return 'Resolved';
+                };      
+                const nextPriority = (cur) => {
+                    if (cur === 'Low') return 'Medium';
+                    if (cur === 'Medium') return 'High';
+                    if (cur === 'High') return 'Critical';
+                    return 'High';
+                };
+
+                const updated = {
+                    ...t,
+                    status: changeStatus ? nextStatus(t.status) : t.status,
+                    priority: !changeStatus ? nextPriority(t.priority) : t.priority,
+                    updatedAt: new Date().toISOString(),
+                };
+                const copy = prev.slice();
+                copy[idx] = updated;
+                return copy;
+            };
+        }, 8000);
+        return () => clearInterval(id);
+    }, [tickets.length]);
+
