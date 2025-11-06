@@ -4,7 +4,7 @@ export default function TicketCard({ ticket, onAdd, isQueued }) {
   return (
     <article className="border rounded-xl p-4 bg-white shadow-sm">
       <h3 className="font-semibold">{ticket.title}</h3>
-      <p className="text-sm text-gray-600 mt-1 line-clamp-2">{ticket.description}</p>
+      <p className="text-sm text-black-600 mt-1 line-clamp-2">{ticket.description}</p>
 
       <div className="mt-3 text-sm">
         <div><span className="font-medium">Priority:</span> {ticket.priority}</div>
@@ -21,7 +21,7 @@ export default function TicketCard({ ticket, onAdd, isQueued }) {
         {isQueued ? 'In My Queue' : 'Add to My Queue'}
       </button>
 
-      {isQueued && <p className="text-xs text-gray-500 mt-2">This ticket is already in your queue.</p>}
+      {isQueued && <p className="text-xs text-black-500 mt-2">This ticket is already in your queue.</p>}
     </article>
   );
 }

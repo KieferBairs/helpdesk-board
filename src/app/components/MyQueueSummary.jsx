@@ -5,7 +5,7 @@ export default function MyQueueSummary({ queuedMap, tickets, onRemove, onClear }
   const queuedTickets = tickets.filter(t => queuedMap[t.id]);
 
   return (
-    <aside className="mt-6 border rounded-xl p-4 bg-gray-50">
+    <aside className="mt-6 border rounded-xl p-4 bg-black-50">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">My Queue ({queuedIds.length})</h2>
         <button
@@ -18,7 +18,7 @@ export default function MyQueueSummary({ queuedMap, tickets, onRemove, onClear }
       </div>
 
       {queuedTickets.length === 0 ? (
-        <p className="text-sm text-gray-600 mt-2">No tickets selected.</p>
+        <p className="text-sm text-black-600 mt-2">No tickets selected.</p>
       ) : (
         <ul className="mt-2 space-y-2">
           {queuedTickets.map(t => (
