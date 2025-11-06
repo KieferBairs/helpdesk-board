@@ -107,7 +107,7 @@ export default function Board() {
   const clearQueue = useCallback(() => setQueue({}), []);
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 text-gray-900 bg-gray-100 p-4 rounded-xl">
       <div className="flex flex-wrap gap-2 items-center">
         <StatusFilter
           value={filters.status}
